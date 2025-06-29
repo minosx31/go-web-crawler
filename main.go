@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 func main() {
@@ -15,8 +16,26 @@ func main() {
 		os.Exit(1)
 	}
 	base_url := args[0]
+
+	const maxConcurrency = 4
+	config, err := configure(base_url, maxConcurrency)
+	if err != nil {
+		fmt.Printf("Error - configure: %v", err)
+		return
+	}
+
 	fmt.Printf("starting crawl of: %s ...\n", base_url)
 
-	pages := make(map[string]int)
-	crawlPage(base_url, base_url, pages)
+	start := time.Now()
+
+	config.wg.Add(1)
+	go config.crawlPage(base_url)
+	config.wg.Wait()
+
+	elapsed := time.Since(start)
+	fmt.Printf("Crawler took %v to complete!\n", elapsed)
+
+	for normalizedURL, visitCount := range config.pages {
+		fmt.Printf("%d - %s\n", visitCount, normalizedURL)
+	}
 }
