@@ -47,7 +47,5 @@ func main() {
 	elapsed := time.Since(start)
 	fmt.Printf("Crawler took %v to complete!\n", elapsed)
 
-	for normalizedURL, visitCount := range config.pages {
-		fmt.Printf("%d - %s\n", visitCount, normalizedURL)
-	}
+	printReport(config.pages, config.baseURL.String())
 }

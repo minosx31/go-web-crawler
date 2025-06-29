@@ -46,15 +46,13 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		fmt.Printf("Error - getHTML: %v", err)
 		return
 	}
-	fmt.Printf("Crawling %s: %s\n", rawCurrentURL, htmlBody)
+	fmt.Printf("Crawling %s\n", rawCurrentURL)
 
 	nextURLs, err := getURLsFromHTML(htmlBody, cfg.baseURL)
 	if err != nil {
 		fmt.Printf("Error - getURLsFromHTML: %v", err)
 		return
 	}
-
-	fmt.Printf("Number of URLs found: %d\n", len(nextURLs))
 
 	for _, nextURL := range nextURLs {
 		cfg.wg.Add(1) // Increment WaitGroup's counter
